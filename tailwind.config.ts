@@ -12,8 +12,13 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        iranYekan: ['iranYekan'],
+        iranSans: ['iranSans'],
+
+      }
     },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
 };
 export default config;
