@@ -8,20 +8,17 @@ export interface TablesTypes {
 
 type TableModalPropsType = {
   status: boolean;
-  tableName: { title: string | null; value: number };
-  setTable: any;
+  setStatus: (status: boolean) => void;
 };
 
-export default function TableModal({
-  status,
-  tableName,
-  setTable,
-}: TableModalPropsType) {
+export default function TableModal({ status, setStatus }: TableModalPropsType) {
   const cartContext = useContext(CartContext);
   if (!cartContext) return null;
 
-  const [isShow, setIsShow] = useState<boolean>(status);
-  console.log("is show =>", isShow);
+  const [isShow, setIsShow] = useState<boolean | null>(null);
+  useEffect(() => {
+    setIsShow(status);
+  }, [status]);
   console.log("is status prop =>", status);
 
   const [tables, setTables] = useState<TablesTypes[]>([
@@ -37,15 +34,12 @@ export default function TableModal({
   });
 
   const clickHandler = () => {
-    setTable(selectedTable);
-    setIsShow(false);
-    // localStorage.setItem("table", JSON.stringify(selectedTable));
-
+    setStatus(false);
     cartContext.setSelectedTables(selectedTable.value);
   };
 
   return (
-    <dialog id="my_modal_1" className={`modal ${status && "modal-open"} `}>
+    <dialog id="my_modal_1" className={`modal ${isShow && "modal-open"} `}>
       <div className="modal-box font-iranSans">
         <h3 className="font-bold text-lg">خوش آمدید!</h3>
         <p className="py-4">
@@ -58,7 +52,8 @@ export default function TableModal({
               className={`border border-gray-300 px-3 py-1 rounded-md hover:bg-gray-500 hover:text-white transition-all cursor-pointer ${
                 selectedTable.value === table.value && `bg-gray-500 text-white`
               } ${
-                table.value === tableName.value && `!bg-gray-500 !text-white`
+                table.value === cartContext.selectedTables &&
+                `!bg-gray-500 !text-white`
               }`}
               onClick={() =>
                 setSelectedTable({ title: table.title, value: table.value })

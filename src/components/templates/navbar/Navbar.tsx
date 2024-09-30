@@ -8,24 +8,13 @@ export default function Navbar() {
   const [isShowModal, setIsShowModal] = useState(false);
   const cartContext = useContext(CartContext);
   if (!cartContext) return null;
-  // const [table, setTable] = useState(JSON.parse(localStorage.getItem("table")));
 
   const [table, setTable] = useState({ title: "", value: 0 });
-
-  // useEffect(() => {
-  //   if (!table) {
-  //     console.log(table);
-  //     console.log("table is false");
-
-  //     setIsShowModal(true);
-  //   }
-  // }, []);
 
   useEffect(() => {
     if (table.value !== 0) {
       localStorage.setItem("table", JSON.stringify(table));
     }
-    // setTable(JSON.parse(localStorage.getItem("table")));
   }, [table]);
 
   console.log("isShowModal in navbar => ", isShowModal);
@@ -41,7 +30,10 @@ export default function Navbar() {
             className="bg-red-500 text-white px-5 py-1 rounded-md "
             onClick={() => setIsShowModal(true)}
           >
-            {cartContext.selectedTables || "انتخاب نشده"}
+            {(cartContext.selectedTables && (
+              <span>{`میز ${cartContext.selectedTables} نفره`}</span>
+            )) ||
+              "انتخاب نشده"}
           </button>
           <Link href={"/cart"} className="dropdown dropdown-end">
             <div
@@ -70,7 +62,7 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
-      <TableModal status={isShowModal} tableName={table} setTable={setTable} />
+      <TableModal status={isShowModal} setStatus={setIsShowModal} />
     </>
   );
 }
