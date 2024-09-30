@@ -5,6 +5,7 @@ import ItemCards from "@/components/templates/itemCards/ItemCards";
 import Navbar from "@/components/templates/navbar/Navbar";
 import TableModal from "@/components/templates/tableModal/TableModal";
 
+import { AsyncLocalStorage } from "async_hooks";
 export default function Home() {
   return (
     <>
@@ -12,7 +13,6 @@ export default function Home() {
       <CategoryCards />
       <ItemCards />
       <Footer />
-      <TableModal />
     </>
   );
 }

@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
 
-interface TablesTypes {
+export interface TablesTypes {
   title: string | null;
   value: number;
 }
 
-export default function TableModal() {
-  const [isShow, setIsShow] = useState<boolean>(true);
+export default function TableModal(props: any) {
+  const [isShow, setIsShow] = useState<boolean>(props.status);
   const [tables, setTables] = useState<TablesTypes[]>([
     { title: "دو نفره", value: 2 },
     { title: "چهار نفره", value: 4 },
@@ -19,6 +19,12 @@ export default function TableModal() {
     title: null,
     value: 0,
   });
+
+  const clickHandler = () => {
+    setIsShow(!isShow);
+    localStorage.setItem("table", JSON.stringify(selectedTable));
+  };
+
   return (
     <dialog id="my_modal_1" className={`modal ${isShow && "modal-open"}`}>
       <div className="modal-box font-iranSans">
@@ -48,7 +54,7 @@ export default function TableModal() {
             <button
               disabled={selectedTable.value === 0}
               className="bg-red-500 text-white px-5 py-1 rounded-md hover:opacity-80 transition-all  disabled:opacity-80"
-              onClick={() => setIsShow(!isShow)}
+              onClick={clickHandler}
             >
               تایید
             </button>

@@ -1,10 +1,20 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import TableModal from "../tableModal/TableModal";
 
 export default function Navbar() {
+  const [isShowModal, setIsShowModal] = useState(false);
+  const [table, setTable] = useState(
+    JSON.parse(localStorage.getItem("table")) || {}
+  );
+
+  // useEffect(() => {
+  //   setTable(JSON.parse(localStorage.getItem("table")));
+  // }, [table]);
+  console.log("--", table);
   const showModal = () => {
-    // document.getElementById("my_modal_1")?.showModal();
+    setIsShowModal(true);
   };
 
   return (
@@ -18,7 +28,7 @@ export default function Navbar() {
             className="bg-red-500 text-white px-5 py-1 rounded-md "
             onClick={showModal}
           >
-            میز دو نفره
+            {table.title}
           </button>
           <Link href={"/cart"} className="dropdown dropdown-end">
             <div
@@ -47,6 +57,7 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
+      {isShowModal && <TableModal status={!isShowModal} />}
     </>
   );
 }
