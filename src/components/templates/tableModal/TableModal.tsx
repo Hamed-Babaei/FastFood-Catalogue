@@ -1,13 +1,29 @@
 "use client";
-import React, { useState } from "react";
-
+import { CartContext } from "@/context/CartContext";
+import React, { useContext, useEffect, useState } from "react";
 export interface TablesTypes {
   title: string | null;
   value: number;
 }
 
-export default function TableModal(props: any) {
-  const [isShow, setIsShow] = useState<boolean>(props.status);
+type TableModalPropsType = {
+  status: boolean;
+  tableName: { title: string | null; value: number };
+  setTable: any;
+};
+
+export default function TableModal({
+  status,
+  tableName,
+  setTable,
+}: TableModalPropsType) {
+  const cartContext = useContext(CartContext);
+  if (!cartContext) return null;
+
+  const [isShow, setIsShow] = useState<boolean>(status);
+  console.log("is show =>", isShow);
+  console.log("is status prop =>", status);
+
   const [tables, setTables] = useState<TablesTypes[]>([
     { title: "دو نفره", value: 2 },
     { title: "چهار نفره", value: 4 },
@@ -21,12 +37,15 @@ export default function TableModal(props: any) {
   });
 
   const clickHandler = () => {
-    setIsShow(!isShow);
-    localStorage.setItem("table", JSON.stringify(selectedTable));
+    setTable(selectedTable);
+    setIsShow(false);
+    // localStorage.setItem("table", JSON.stringify(selectedTable));
+
+    cartContext.setSelectedTables(selectedTable.value);
   };
 
   return (
-    <dialog id="my_modal_1" className={`modal ${isShow && "modal-open"}`}>
+    <dialog id="my_modal_1" className={`modal ${status && "modal-open"} `}>
       <div className="modal-box font-iranSans">
         <h3 className="font-bold text-lg">خوش آمدید!</h3>
         <p className="py-4">
@@ -38,6 +57,8 @@ export default function TableModal(props: any) {
               key={table.value}
               className={`border border-gray-300 px-3 py-1 rounded-md hover:bg-gray-500 hover:text-white transition-all cursor-pointer ${
                 selectedTable.value === table.value && `bg-gray-500 text-white`
+              } ${
+                table.value === tableName.value && `!bg-gray-500 !text-white`
               }`}
               onClick={() =>
                 setSelectedTable({ title: table.title, value: table.value })

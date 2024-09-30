@@ -1,21 +1,34 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import TableModal from "../tableModal/TableModal";
+import { CartContext } from "@/context/CartContext";
 
 export default function Navbar() {
   const [isShowModal, setIsShowModal] = useState(false);
-  const [table, setTable] = useState(
-    JSON.parse(localStorage.getItem("table")) || {}
-  );
+  const cartContext = useContext(CartContext);
+  if (!cartContext) return null;
+  // const [table, setTable] = useState(JSON.parse(localStorage.getItem("table")));
+
+  const [table, setTable] = useState({ title: "", value: 0 });
 
   // useEffect(() => {
-  //   setTable(JSON.parse(localStorage.getItem("table")));
-  // }, [table]);
-  console.log("--", table);
-  const showModal = () => {
-    setIsShowModal(true);
-  };
+  //   if (!table) {
+  //     console.log(table);
+  //     console.log("table is false");
+
+  //     setIsShowModal(true);
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    if (table.value !== 0) {
+      localStorage.setItem("table", JSON.stringify(table));
+    }
+    // setTable(JSON.parse(localStorage.getItem("table")));
+  }, [table]);
+
+  console.log("isShowModal in navbar => ", isShowModal);
 
   return (
     <>
@@ -26,9 +39,9 @@ export default function Navbar() {
         <div className="flex-none">
           <button
             className="bg-red-500 text-white px-5 py-1 rounded-md "
-            onClick={showModal}
+            onClick={() => setIsShowModal(true)}
           >
-            {table.title}
+            {cartContext.selectedTables || "انتخاب نشده"}
           </button>
           <Link href={"/cart"} className="dropdown dropdown-end">
             <div
@@ -57,7 +70,7 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
-      {isShowModal && <TableModal status={!isShowModal} />}
+      <TableModal status={isShowModal} tableName={table} setTable={setTable} />
     </>
   );
 }
