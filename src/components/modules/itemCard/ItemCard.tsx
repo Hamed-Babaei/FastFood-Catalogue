@@ -24,19 +24,19 @@ export default function ItemCard(card: CardTypes) {
   };
 
   return (
-    <div className="flex items-center gap-2 shadow-xl p-2 bg-gray-300/15 rounded-md overflow-hidden">
+    <div className="flex items-center gap-2 shadow-xl p-2 bg-gray-300/15 rounded-md overflow-hidden ">
       <Image
-        src={"/1yyt5jsv.4kt_280x175.jpg"}
+        src={card.image}
         alt="image"
         width={400}
         height={600}
-        className="w-1/4 rounded-md h-full"
+        className="w-1/4 rounded-md h-24 "
       />
       <div className="flex flex-col items-center w-3/4">
         <div className="flex flex-col gap-1 w-full">
           <p className="text-md text-start">{card.title}</p>
           <p className="text-xs text-start text-gray-500 whitespace-nowrap line-clamp-1">
-            {card.desc}
+            {card.description}
           </p>
         </div>
         <div className="flex items-center justify-between w-full mt-2">

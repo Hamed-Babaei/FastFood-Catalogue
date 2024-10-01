@@ -19,7 +19,6 @@ export default function TableModal({ status, setStatus }: TableModalPropsType) {
   useEffect(() => {
     setIsShow(status);
   }, [status]);
-  console.log("is status prop =>", status);
 
   const [tables, setTables] = useState<TablesTypes[]>([
     { title: "دو نفره", value: 2 },
