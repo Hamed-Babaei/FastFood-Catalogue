@@ -28,7 +28,7 @@ export default function Products({ allProducts }: ProductPropsType) {
           <CategoryCard key={index} {...product} setCatName={setCatName} />
         )) || <p>دسته بندی یافت نشد</p>}
       </div>
-      <div className="flex flex-col px-4 font-iranSans mt-10 mb-5 ">
+      <div className="flex flex-col  font-iranSans mt-10 mb-5 ">
         <p className=" text-xl mb-5">آیتم ها</p>
         <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-3 gap-4">
           {!filteredItems.length
