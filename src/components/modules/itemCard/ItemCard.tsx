@@ -1,7 +1,8 @@
 "use client";
 import { ProductMenuType } from "@/components/templates/products/Products";
+import { CartContext } from "@/context/CartContext";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
@@ -12,6 +13,7 @@ interface ItemCardPropsType {
 export default function ItemCard({ item }: ItemCardPropsType) {
   const [isShowCounter, setIsShowCounter] = useState<boolean>(false);
   const [count, setCount] = useState<number>(1);
+  const cartContext = useContext(CartContext);
 
   const addToCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -40,16 +42,19 @@ export default function ItemCard({ item }: ItemCardPropsType) {
       if (handler === "increase") {
         cart[existingProductIndex].count += 1;
         setCount(cart[existingProductIndex].count);
+        cartContext?.setIsUpdate((pre: boolean) => !pre);
       }
 
       if (handler === "decrease" && cart[existingProductIndex].count > 1) {
         cart[existingProductIndex].count -= 1;
         setCount(cart[existingProductIndex].count);
+        cartContext?.setIsUpdate((pre: boolean) => !pre);
       }
 
       if (handler === "delete" || (handler === "decrease" && count === 1)) {
         cart.splice(existingProductIndex, 1);
         setIsShowCounter(false);
+        cartContext?.setIsUpdate((pre: boolean) => !pre);
       }
 
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -111,6 +116,7 @@ export default function ItemCard({ item }: ItemCardPropsType) {
                 setIsShowCounter(true);
                 setCount(1);
                 addToCart();
+                cartContext?.setIsUpdate((pre) => !pre);
               }}
             >
               افزودن
