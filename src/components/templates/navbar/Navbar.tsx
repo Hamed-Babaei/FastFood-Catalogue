@@ -21,12 +21,12 @@ export default function Navbar() {
     <>
       <div className="navbar bg-base-100 shadow-lg sticky top-0 z-50 font-iranSans">
         <div className="flex-1">
-          <a className="btn btn-ghost text-xl font-iranSans">لیمو فود</a>
+          <a className="btn btn-ghost text-xl font-iranSans">اصغر فود</a>
         </div>
         <div className="flex-none">
           <button
             className="bg-red-500 text-white px-5 py-1 rounded-md "
-            onClick={() => setIsShowModal(true)}
+            onClick={() => cartContext.setTableStatus(true)}
           >
             {(cartContext.selectedTables && (
               <span>{`میز ${cartContext.selectedTables} نفره`}</span>
@@ -62,7 +62,7 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
-      <TableModal status={isShowModal} setStatus={setIsShowModal} />
+      <TableModal />
     </>
   );
 }

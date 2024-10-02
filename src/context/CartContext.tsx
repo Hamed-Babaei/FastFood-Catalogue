@@ -15,12 +15,11 @@ interface CartItem {
 interface CartContextType {
   selectedTables: number;
   setSelectedTables: (count: number) => void;
+  tableStatus: boolean;
+  setTableStatus: (status: boolean | ((preStatus: boolean) => boolean)) => void;
   totalItems: number;
   setIsUpdate: (status: boolean | ((prevState: boolean) => boolean)) => void;
   cartItems: CartItem[];
-  // addToCart: (item: CartItem) => void;
-  // removeFromCart: (id: number) => void;
-  // updateCartItem: (id: number, count: number) => void;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(
@@ -29,12 +28,16 @@ export const CartContext = createContext<CartContextType | undefined>(
 
 export const TableProvider = ({ children }: { children: ReactNode }) => {
   const [selectedTables, setSelectedTables] = useState<number>(0);
+  const [tableStatus, setTableStatus] = useState(true);
 
   useEffect(() => {
     // وقتی صفحه بارگذاری می‌شود مقدار لوکال‌استوریج را بخواند
     const storedTables = localStorage.getItem("selectedTables");
     if (storedTables) {
+      setTableStatus(false);
       setSelectedTables(Number(storedTables));
+    } else {
+      // setTableStatus(true);
     }
   }, []);
 
@@ -74,6 +77,8 @@ export const TableProvider = ({ children }: { children: ReactNode }) => {
       value={{
         selectedTables,
         setSelectedTables: updateSelectedTables,
+        tableStatus,
+        setTableStatus,
         cartItems,
         setIsUpdate,
         totalItems,

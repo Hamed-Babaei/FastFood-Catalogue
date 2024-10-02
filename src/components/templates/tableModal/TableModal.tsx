@@ -6,19 +6,11 @@ export interface TablesTypes {
   value: number;
 }
 
-type TableModalPropsType = {
-  status: boolean;
-  setStatus: (status: boolean) => void;
-};
-
-export default function TableModal({ status, setStatus }: TableModalPropsType) {
+export default function TableModal() {
   const cartContext = useContext(CartContext);
   if (!cartContext) return null;
 
   const [isShow, setIsShow] = useState<boolean | null>(null);
-  useEffect(() => {
-    setIsShow(status);
-  }, [status]);
 
   const [tables, setTables] = useState<TablesTypes[]>([
     { title: "دو نفره", value: 2 },
@@ -33,12 +25,15 @@ export default function TableModal({ status, setStatus }: TableModalPropsType) {
   });
 
   const clickHandler = () => {
-    setStatus(false);
+    cartContext.setTableStatus(false);
     cartContext.setSelectedTables(selectedTable.value);
   };
 
   return (
-    <dialog id="my_modal_1" className={`modal ${isShow && "modal-open"} `}>
+    <dialog
+      id="my_modal_1"
+      className={`modal ${cartContext.tableStatus && "modal-open"} `}
+    >
       <div className="modal-box font-iranSans">
         <h3 className="font-bold text-lg">خوش آمدید!</h3>
         <p className="py-4">
