@@ -1,21 +1,18 @@
 import Footer from "@/components/templates/footer/Footer";
 import Hero from "@/components/templates/hero/Hero";
-import Products from "@/components/templates/products/Products";
+import Products, {
+  ProductMenuType,
+  ProductsType,
+} from "@/components/templates/products/Products";
 
 import axios from "axios";
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  // هر خصوصیت دیگری که در لیست محصولات موجود است
-}
 
 interface ProductsPageProps {
-  products: Product[];
+  products: ProductsType[];
 }
 
 const Home = async () => {
-  let products: Product[] = [];
+  let products: ProductsType[] = [];
 
   try {
     const response = await axios.get(

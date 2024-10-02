@@ -1,10 +1,15 @@
 import { CardTypes } from "@/components/templates/itemCards/ItemCards";
+import { ProductMenuType } from "@/components/templates/products/Products";
 import Image from "next/image";
 import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
-export default function ItemCard(card: CardTypes) {
+interface ItemCardPropsType {
+  item: ProductMenuType;
+}
+
+export default function ItemCard({ item }: ItemCardPropsType) {
   const [isShowCounter, setIsShowCounter] = useState<boolean>(false);
   const [count, setCount] = useState<number>(1);
 
@@ -26,7 +31,7 @@ export default function ItemCard(card: CardTypes) {
   return (
     <div className="flex items-center gap-2 shadow-xl p-2 bg-gray-300/15 rounded-md overflow-hidden ">
       <Image
-        src={card.image}
+        src={item.image}
         alt="image"
         width={400}
         height={600}
@@ -34,14 +39,14 @@ export default function ItemCard(card: CardTypes) {
       />
       <div className="flex flex-col items-center w-3/4">
         <div className="flex flex-col gap-1 w-full">
-          <p className="text-md text-start">{card.title}</p>
+          <p className="text-md text-start">{item.title}</p>
           <p className="text-xs text-start text-gray-500 whitespace-nowrap line-clamp-1">
-            {card.description}
+            {item.description}
           </p>
         </div>
         <div className="flex items-center justify-between w-full mt-2">
-          <p className="text-red-500 bg-slate-100 px-2 py-1 rounded-md ">
-            {card.price}
+          <p className="text-red-500 bg-slate-100 px-2 py-1 rounded-md font-iranSans">
+            {Number(item.varieties?.[0].price).toLocaleString("fa-IR")}
           </p>
           {isShowCounter ? (
             <button className="bg-red-500 text-white  py-1 rounded-md transition-all flex items-center justify-between  w-20 px-1">
