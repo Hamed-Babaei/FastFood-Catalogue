@@ -7,12 +7,11 @@
   --foreground: #171717;
 }
 
-
 @font-face {
   font-family: "iranYekan";
-  src: url("../app/fonts/iranyekanwebregular.woff");
+  src: url("/public/fonts/iranyekanwebregular.woff");
 }
 @font-face {
   font-family: "iranSans";
-  src: url("../app/fonts/IRANSans/IRANSans_Medium.ttf");
+  src: url("/public/fonts/IRANSans/IRANSans_Medium.ttf");
 }

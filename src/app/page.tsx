@@ -26,7 +26,7 @@ const Home = async () => {
   return (
     <>
       <Hero />
-      {/* <CategoryCards products={products} /> */}
+
       <Products allProducts={products} />
       <Footer />
     </>
