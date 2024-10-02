@@ -17,16 +17,13 @@ interface CartItem {
 }
 
 export default function CartPage() {
-  // State for cart items
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  // Load cart items from localStorage when component mounts
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem("cart") || "[]");
     setCartItems(storedCartItems);
   }, []);
 
-  // Function to calculate total price
   const calculateTotal = () => {
     return cartItems.reduce(
       (total, item) => total + item.varieties[0].discounted_price * item.count,
@@ -34,7 +31,6 @@ export default function CartPage() {
     );
   };
 
-  // Function to increase quantity of a product
   const increaseQuantity = (id: number) => {
     const updatedCartItems = cartItems.map((item) =>
       item.id === id ? { ...item, count: item.count + 1 } : item
@@ -43,7 +39,6 @@ export default function CartPage() {
     localStorage.setItem("cart", JSON.stringify(updatedCartItems));
   };
 
-  // Function to decrease quantity of a product
   const decreaseQuantity = (id: number) => {
     const updatedCartItems = cartItems
       .map((item) =>
@@ -56,7 +51,6 @@ export default function CartPage() {
     localStorage.setItem("cart", JSON.stringify(updatedCartItems));
   };
 
-  // Function to remove an item from cart
   const removeItem = (id: number) => {
     const updatedCartItems = cartItems.filter((item) => item.id !== id);
     setCartItems(updatedCartItems);
@@ -94,19 +88,19 @@ export default function CartPage() {
                         alt={item.title}
                         width={400}
                         height={600}
-                        className="w-1/4 rounded-md h-full"
+                        className="w-1/5 rounded-md h-fit"
                       />
                       <div className="flex flex-col gap-2">
                         <h3 className="sm:text-lg font-semibold text-sm">
                           {item.title}
                         </h3>
                         <p className="text-sm">
-                          قیمت:{" "}
+                          قیمت:
                           <span>
                             {item.varieties[0].discounted_price.toLocaleString(
                               "fa-IR"
                             )}
-                          </span>{" "}
+                          </span>
                           تومان
                         </p>
                       </div>
@@ -123,7 +117,7 @@ export default function CartPage() {
                           {item.count.toLocaleString("fa-IR")}
                         </span>
                         <button
-                          className={`bg-gray-300 rounded-md p-2 me-2 hover:bg-gray-200 transition-all ${
+                          className={`bg-gray-300 rounded-md p-2  hover:bg-gray-200 transition-all ${
                             item.count === 1 ? "disabled" : ""
                           }`}
                           onClick={() => decreaseQuantity(item.id)}

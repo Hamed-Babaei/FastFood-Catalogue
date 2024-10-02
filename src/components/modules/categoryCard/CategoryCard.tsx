@@ -14,7 +14,6 @@ export default function CategoryCard({
   category,
   setCatName,
 }: CategoryCardType) {
-  console.log("category => ", category);
   return (
     <div
       className="shadow-xl rounded-md overflow-hidden transition-all hover:shadow-none duration-300 group flex items-center justify-center flex-col !cursor-pointer"

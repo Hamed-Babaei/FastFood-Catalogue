@@ -22,7 +22,6 @@ const Home = async () => {
   } catch (error) {
     console.error("Error fetching products:", error);
   }
-  console.log("products =>", products);
 
   return (
     <>

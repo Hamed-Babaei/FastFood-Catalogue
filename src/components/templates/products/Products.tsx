@@ -44,8 +44,8 @@ export interface ProductMenuType {
   updated_at: string;
   deleted_at: string | null;
   varieties: Variety[];
-  extra: any[]; // می‌توانید تایپ دقیق‌تری برای extra تعریف کنید
-  material: any[]; // می‌توانید تایپ دقیق‌تری برای material تعریف کنید
+  extra: any[];
+  material: any[];
   count?: number;
 }
 
@@ -78,15 +78,12 @@ type ProductPagePropsType = {
 export default function Products({ allProducts }: ProductPagePropsType) {
   const [catName, setCatName] = useState<string>("");
   const [products, setProducts] = useState<ProductsType[]>(allProducts);
-  console.log("products in home => ", products);
   const [filteredItems, setFilteredItems] = useState<ProductsType[] | []>([]);
-  console.log("filteredItems =>", filteredItems);
 
   useEffect(() => {
     setFilteredItems(
       products.filter((category: ProductsType) => category.title === catName)
     );
-    console.log("filteredItems -> ", filteredItems);
   }, [catName]);
 
   return (

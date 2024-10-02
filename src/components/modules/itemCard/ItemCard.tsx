@@ -13,61 +13,49 @@ export default function ItemCard({ item }: ItemCardPropsType) {
   const [isShowCounter, setIsShowCounter] = useState<boolean>(false);
   const [count, setCount] = useState<number>(1);
 
-  // اضافه کردن محصول به سبد خرید در localStorage
   const addToCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-    // بررسی می‌کنیم که آیا محصول قبلاً در سبد خرید وجود دارد یا نه
     const existingProductIndex = cart.findIndex(
       (cartItem: any) => cartItem.id === item.id
     );
 
     if (existingProductIndex !== -1) {
-      // اگر محصول قبلاً در سبد بود، تعداد آن را افزایش می‌دهیم
       cart[existingProductIndex].count += count;
     } else {
-      // اگر محصول جدید بود، آن را اضافه می‌کنیم
       cart.push({ ...item, count });
     }
 
-    // ذخیره سبد خرید در localStorage
     localStorage.setItem("cart", JSON.stringify(cart));
   };
 
-  // به‌روزرسانی تعداد محصول در سبد خرید
   const updateCart = (handler: "increase" | "decrease" | "delete") => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-    // یافتن محصول در سبد خرید
     const existingProductIndex = cart.findIndex(
       (cartItem: any) => cartItem.id === item.id
     );
 
     if (existingProductIndex !== -1) {
-      // افزایش تعداد
       if (handler === "increase") {
         cart[existingProductIndex].count += 1;
         setCount(cart[existingProductIndex].count);
       }
 
-      // کاهش تعداد
       if (handler === "decrease" && cart[existingProductIndex].count > 1) {
         cart[existingProductIndex].count -= 1;
         setCount(cart[existingProductIndex].count);
       }
 
-      // حذف محصول از سبد خرید
       if (handler === "delete" || (handler === "decrease" && count === 1)) {
         cart.splice(existingProductIndex, 1);
         setIsShowCounter(false);
       }
 
-      // ذخیره تغییرات در localStorage
       localStorage.setItem("cart", JSON.stringify(cart));
     }
   };
 
-  // تنظیم مقدار اولیه تعداد محصول از سبد خرید هنگام بارگذاری
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
     const existingProduct = cart.find(
