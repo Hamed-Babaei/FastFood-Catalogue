@@ -40,6 +40,7 @@ const Home = async () => {
   return (
     <>
       <Hero />
+      <Products allProducts={products} />
       <Footer />
     </>
   );
