@@ -52,9 +52,7 @@ export default function TableModal() {
               onClick={() =>
                 setSelectedTable({ title: table.title, value: table.value })
               }
-            >
-              {table.title}
-            </div>
+            ></div>
           ))}
         </div>
         {selectedTable.title}
