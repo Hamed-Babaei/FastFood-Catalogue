@@ -1,7 +1,7 @@
-import { CardTypes } from "@/components/templates/itemCards/ItemCards";
+"use client";
 import { ProductMenuType } from "@/components/templates/products/Products";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
@@ -13,20 +13,72 @@ export default function ItemCard({ item }: ItemCardPropsType) {
   const [isShowCounter, setIsShowCounter] = useState<boolean>(false);
   const [count, setCount] = useState<number>(1);
 
-  const counterHandler = (handler: "increase" | "decrease" | "delete") => {
-    if (handler === "increase") {
-      setCount((pre) => pre + 1);
+  // اضافه کردن محصول به سبد خرید در localStorage
+  const addToCart = () => {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    // بررسی می‌کنیم که آیا محصول قبلاً در سبد خرید وجود دارد یا نه
+    const existingProductIndex = cart.findIndex(
+      (cartItem: any) => cartItem.id === item.id
+    );
+
+    if (existingProductIndex !== -1) {
+      // اگر محصول قبلاً در سبد بود، تعداد آن را افزایش می‌دهیم
+      cart[existingProductIndex].count += count;
+    } else {
+      // اگر محصول جدید بود، آن را اضافه می‌کنیم
+      cart.push({ ...item, count });
     }
-    if (handler === "decrease") {
-      if (count >= 1) {
-        setCount((pre) => pre - 1);
+
+    // ذخیره سبد خرید در localStorage
+    localStorage.setItem("cart", JSON.stringify(cart));
+  };
+
+  // به‌روزرسانی تعداد محصول در سبد خرید
+  const updateCart = (handler: "increase" | "decrease" | "delete") => {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    // یافتن محصول در سبد خرید
+    const existingProductIndex = cart.findIndex(
+      (cartItem: any) => cartItem.id === item.id
+    );
+
+    if (existingProductIndex !== -1) {
+      // افزایش تعداد
+      if (handler === "increase") {
+        cart[existingProductIndex].count += 1;
+        setCount(cart[existingProductIndex].count);
       }
-    }
-    if (handler === "delete") {
-      setIsShowCounter(false);
-      setCount(0);
+
+      // کاهش تعداد
+      if (handler === "decrease" && cart[existingProductIndex].count > 1) {
+        cart[existingProductIndex].count -= 1;
+        setCount(cart[existingProductIndex].count);
+      }
+
+      // حذف محصول از سبد خرید
+      if (handler === "delete" || (handler === "decrease" && count === 1)) {
+        cart.splice(existingProductIndex, 1);
+        setIsShowCounter(false);
+      }
+
+      // ذخیره تغییرات در localStorage
+      localStorage.setItem("cart", JSON.stringify(cart));
     }
   };
+
+  // تنظیم مقدار اولیه تعداد محصول از سبد خرید هنگام بارگذاری
+  useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existingProduct = cart.find(
+      (cartItem: any) => cartItem.id === item.id
+    );
+
+    if (existingProduct) {
+      setCount(existingProduct.count);
+      setIsShowCounter(true);
+    }
+  }, [item.id]);
 
   return (
     <div className="flex items-center gap-2 shadow-xl p-2 bg-gray-300/15 rounded-md overflow-hidden ">
@@ -49,23 +101,17 @@ export default function ItemCard({ item }: ItemCardPropsType) {
             {Number(item.varieties?.[0].price).toLocaleString("fa-IR")}
           </p>
           {isShowCounter ? (
-            <button className="bg-red-500 text-white  py-1 rounded-md transition-all flex items-center justify-between  w-20 px-1">
-              <span
-                className="w-1/3 "
-                onClick={() => counterHandler("increase")}
-              >
+            <button className="bg-red-500 text-white py-1 rounded-md transition-all flex items-center justify-between w-20 px-1">
+              <span className="w-1/3" onClick={() => updateCart("increase")}>
                 <FaPlus size={"0.8rem"} />
               </span>
               <span className="w-1/3">{count}</span>
               {count === 1 ? (
-                <span className="!w-7" onClick={() => counterHandler("delete")}>
+                <span className="!w-7" onClick={() => updateCart("delete")}>
                   <MdDelete size={"1.5rem"} />
                 </span>
               ) : (
-                <span
-                  className="!w1/3 "
-                  onClick={() => counterHandler("decrease")}
-                >
+                <span className="!w1/3" onClick={() => updateCart("decrease")}>
                   -
                 </span>
               )}
@@ -76,6 +122,7 @@ export default function ItemCard({ item }: ItemCardPropsType) {
               onClick={() => {
                 setIsShowCounter(true);
                 setCount(1);
+                addToCart();
               }}
             >
               افزودن

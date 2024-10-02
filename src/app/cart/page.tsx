@@ -1,23 +1,66 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RiCloseCircleLine } from "react-icons/ri";
 
-export default function page() {
+interface CartItem {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  count: number;
+  varieties: {
+    price: string;
+    discounted_price: number;
+  }[];
+}
+
+export default function CartPage() {
   // State for cart items
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: "چلو مرغ", price: 1000000, quantity: 1 },
-    { id: 2, name: "برگر با سیب زمینی", price: 8, quantity: 2 },
-    { id: 3, name: "پیتزا", price: 12000, quantity: 1 },
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  // Load cart items from localStorage when component mounts
+  useEffect(() => {
+    const storedCartItems = JSON.parse(localStorage.getItem("cart") || "[]");
+    setCartItems(storedCartItems);
+  }, []);
 
   // Function to calculate total price
   const calculateTotal = () => {
     return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
+      (total, item) => total + item.varieties[0].discounted_price * item.count,
       0
     );
+  };
+
+  // Function to increase quantity of a product
+  const increaseQuantity = (id: number) => {
+    const updatedCartItems = cartItems.map((item) =>
+      item.id === id ? { ...item, count: item.count + 1 } : item
+    );
+    setCartItems(updatedCartItems);
+    localStorage.setItem("cart", JSON.stringify(updatedCartItems));
+  };
+
+  // Function to decrease quantity of a product
+  const decreaseQuantity = (id: number) => {
+    const updatedCartItems = cartItems
+      .map((item) =>
+        item.id === id && item.count > 1
+          ? { ...item, count: item.count - 1 }
+          : item
+      )
+      .filter((item) => item.count > 0);
+    setCartItems(updatedCartItems);
+    localStorage.setItem("cart", JSON.stringify(updatedCartItems));
+  };
+
+  // Function to remove an item from cart
+  const removeItem = (id: number) => {
+    const updatedCartItems = cartItems.filter((item) => item.id !== id);
+    setCartItems(updatedCartItems);
+    localStorage.setItem("cart", JSON.stringify(updatedCartItems));
   };
 
   return (
@@ -31,66 +74,76 @@ export default function page() {
           className="!w-full relative"
         />
       </div>
-      <div className=" absolute top-[40vh] w-full !font-iranSans">
-        <div className="flex flex-col md:flex-row justify-between p-4   bg-white">
+      <div className="absolute top-[40vh] w-full !font-iranSans">
+        <div className="flex flex-col md:flex-row justify-between p-4 bg-white">
           {/* Main section (cart items) */}
           <main className="md:w-2/3 md:border-e w-full mb-4 md:mb-0">
-            <h2 className="text-xl font-bold mb-4  ">سبد خرید</h2>
+            <h2 className="text-xl font-bold mb-4">سبد خرید</h2>
             <div className="">
-              {cartItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex justify-between items-center bg-white sm:pb-4 pb-0 rounded-lg"
-                >
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={"/1yyt5jsv.4kt_280x175.jpg"}
-                      alt="image"
-                      width={400}
-                      height={600}
-                      className="w-1/4 rounded-md h-full"
-                    />
-                    <div className="flex flex-col gap-2">
-                      <h3 className="sm:text-lg font-semibold text-sm">
-                        {item.name}
-                      </h3>
-                      <p className="text-sm">
-                        قیمت: <span>{item.price}</span> تومان
-                      </p>
+              {cartItems.length === 0 ? (
+                <p>سبد خرید شما خالی است.</p>
+              ) : (
+                cartItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex justify-between items-center bg-white sm:pb-4 pb-0 rounded-lg"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        width={400}
+                        height={600}
+                        className="w-1/4 rounded-md h-full"
+                      />
+                      <div className="flex flex-col gap-2">
+                        <h3 className="sm:text-lg font-semibold text-sm">
+                          {item.title}
+                        </h3>
+                        <p className="text-sm">
+                          قیمت:{" "}
+                          <span>
+                            {item.varieties[0].discounted_price.toLocaleString(
+                              "fa-IR"
+                            )}
+                          </span>{" "}
+                          تومان
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center !w-[8rem] md:w-fit">
+                      <div className="pt-2 pt-sm-0 ps-sm-3 mx-auto mx-sm-0 text-center text-sm-end">
+                        <button
+                          onClick={() => increaseQuantity(item.id)}
+                          className="bg-gray-300 rounded-md p-2  hover:bg-gray-200 transition-all"
+                        >
+                          +
+                        </button>
+                        <span className="px-2">
+                          {item.count.toLocaleString("fa-IR")}
+                        </span>
+                        <button
+                          className={`bg-gray-300 rounded-md p-2 me-2 hover:bg-gray-200 transition-all ${
+                            item.count === 1 ? "disabled" : ""
+                          }`}
+                          onClick={() => decreaseQuantity(item.id)}
+                        >
+                          -
+                        </button>
+                        <br />
+                        <button
+                          className="flex gap-1 items-center text-red-500 bg-transparent border-none shadow-none  pe-0 text-sm md:text-md"
+                          type="button"
+                          onClick={() => removeItem(item.id)}
+                        >
+                          <RiCloseCircleLine className="ms-1" />
+                          <span className="">حذف</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center !w-[8rem] md:w-fit">
-                    <div className="pt-2 pt-sm-0 ps-sm-3 mx-auto mx-sm-0 text-center text-sm-end">
-                      <button
-                        // onClick={() => dispatch(increase(id))}
-                        className="bg-gray-300 rounded-md p-2  hover:bg-gray-200 transition-all "
-                      >
-                        +
-                      </button>
-                      <span className="px-2">
-                        {item.quantity.toLocaleString("fa-IR")}
-                      </span>
-                      <button
-                        className={`bg-gray-300 rounded-md p-2 me-2 hover:bg-gray-200 transition-all ${
-                          item.quantity === 1 ? "disabled" : ""
-                        }`}
-                        // onClick={() => dispatch(decrease(id))}
-                      >
-                        -
-                      </button>
-                      <br />
-                      <button
-                        className="flex gap-1 items-center text-red-500 bg-transparent border-none shadow-none  pe-0 text-sm md:text-md"
-                        type="button"
-                        // onClick={() => dispatch(removeItem(id))}
-                      >
-                        <RiCloseCircleLine className="ms-1" />
-                        <span className="">حذف</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </main>
 
@@ -98,7 +151,9 @@ export default function page() {
           <aside className="md:w-1/3 w-full bg-white p-4 rounded-lg mt-5">
             <div className="flex justify-between items-center">
               <span>مجموع پرداختی:</span>
-              <span className="text-xl font-bold">${calculateTotal()}</span>
+              <span className="text-xl font-bold">
+                {calculateTotal().toLocaleString("fa-IR")} تومان
+              </span>
             </div>
             <div className="border-t mt-5">
               <Link

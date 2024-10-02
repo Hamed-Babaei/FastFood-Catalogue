@@ -46,6 +46,7 @@ export interface ProductMenuType {
   varieties: Variety[];
   extra: any[]; // می‌توانید تایپ دقیق‌تری برای extra تعریف کنید
   material: any[]; // می‌توانید تایپ دقیق‌تری برای material تعریف کنید
+  count?: number;
 }
 
 export interface Image {
