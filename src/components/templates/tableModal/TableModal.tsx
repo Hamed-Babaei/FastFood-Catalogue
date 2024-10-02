@@ -56,6 +56,7 @@ export default function TableModal() {
               {table.title}
             </div>
           ))}
+          {/* {cartContext.selectedTables} */}
         </div>
         <div className="modal-action">
           <form method="dialog">

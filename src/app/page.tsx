@@ -1,11 +1,25 @@
-import Footer from "@/components/templates/footer/Footer";
-import Hero from "@/components/templates/hero/Hero";
-import Products, {
-  ProductMenuType,
-  ProductsType,
-} from "@/components/templates/products/Products";
-
+import dynamic from "next/dynamic";
 import axios from "axios";
+import { ProductsType } from "@/components/templates/products/Products";
+const Loading = () => (
+  <div className="!w-full !h-full flex items-center justify-center">
+    <span className="loading loading-dots loading-lg flex items-center justify-center"></span>
+  </div>
+);
+
+// Lazy loading components
+const Footer = dynamic(() => import("@/components/templates/footer/Footer"), {
+  ssr: false,
+  loading: Loading,
+});
+const Hero = dynamic(() => import("@/components/templates/hero/Hero"), {
+  ssr: false,
+  loading: Loading,
+});
+const Products = dynamic(
+  () => import("@/components/templates/products/Products"),
+  { ssr: false, loading: Loading }
+);
 
 interface ProductsPageProps {
   products: ProductsType[];
@@ -26,8 +40,6 @@ const Home = async () => {
   return (
     <>
       <Hero />
-
-      <Products allProducts={products} />
       <Footer />
     </>
   );
