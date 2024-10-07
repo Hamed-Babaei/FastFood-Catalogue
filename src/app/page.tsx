@@ -8,14 +8,8 @@ const Loading = () => (
 );
 
 // Lazy loading components
-const Footer = dynamic(() => import("@/components/templates/footer/Footer"), {
-  ssr: false,
-  loading: Loading,
-});
-const Hero = dynamic(() => import("@/components/templates/hero/Hero"), {
-  ssr: false,
-  loading: Loading,
-});
+const Footer = dynamic(() => import("@/components/templates/footer/Footer"));
+const Hero = dynamic(() => import("@/components/templates/hero/Hero"));
 const Products = dynamic(
   () => import("@/components/templates/products/Products"),
   { ssr: false, loading: Loading }
